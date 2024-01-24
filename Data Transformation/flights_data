@@ -1,0 +1,137 @@
+### No.1 จงแสดงflightsบินพร้อมสายการบินนที่ใช้เวลาบินมากกว่า 300 minและเรียงลำดับจากน้อบไปมาก  
+flights %>%
+    select(carrier,flight,air_time) %>%
+    filter(air_time > 400) %>%
+    arrange(air_time) %>%
+    head(10) %>%
+    left_join(airlines)
+## ANSWER
+# A tibble: 10 × 4
+   carrier flight air_time name                  
+   <chr>    <int>    <dbl> <chr>                 
+ 1 UA        1697      401 United Air Lines Inc. 
+ 2 UA        1289      402 United Air Lines Inc. 
+ 3 UA        1120      402 United Air Lines Inc. 
+ 4 UA        1479      403 United Air Lines Inc. 
+ 5 B6         359      403 JetBlue Airways       
+ 6 VX          29      404 Virgin America        
+ 7 VX          29      404 Virgin America        
+ 8 VX         413      404 Virgin America        
+ 9 AA          67      404 American Airlines Inc.
+10 UA         887      404 United Air Lines Inc.
+
+### No.2 จงหาค่าเฉลี่ยระยะทางการบินในเดือนที่ 9 ของทุกสายการบิน
+flights %>%
+    select(carrier,distance,month) %>%
+    filter(month == 9) %>%
+    group_by(carrier) %>%
+    summarise(mean(distance))%>%
+    left_join(airlines)
+## ANSWER
+# A tibble: 16 × 3
+   carrier `mean(distance)` name                       
+   <chr>              <dbl> <chr>                      
+ 1 9E                  580. Endeavor Air Inc.          
+ 2 AA                 1338. American Airlines Inc.     
+ 3 AS                 2402  Alaska Airlines Inc.       
+ 4 B6                 1065. JetBlue Airways            
+ 5 DL                 1231. Delta Air Lines Inc.       
+ 6 EV                  577. ExpressJet Airlines Inc.   
+ 7 F9                 1620  Frontier Airlines Inc.     
+ 8 FL                  647. AirTran Airways Corporation
+ 9 HA                 4983  Hawaiian Airlines Inc.     
+10 MQ                  577. Envoy Air                  
+11 OO                  419  SkyWest Airlines Inc.      
+12 UA                 1568. United Air Lines Inc.      
+13 US                  525. US Airways Inc.            
+14 VX                 2501. Virgin America             
+15 WN                 1018. Southwest Airlines Co.     
+16 YV                  476. Mesa Airlines Inc.
+
+### No.3 จงหาค่าเฉลี่ยระยะเวลาดีเลย์เฉลี่ยในเดือนที่ 7,8,9 ของทุกสายการบิน
+flights %>%
+    filter((month == 7 | month == 8 | month == 9) & dep_delay != "NA") %>%
+    select(carrier,dep_delay)%>%
+    group_by(carrier)%>%
+    summarise(mean(dep_delay))%>%
+    arrange(`mean(dep_delay)`)%>%
+    left_join(airlines)
+## ANSWER
+# A tibble: 16 × 3
+   carrier `mean(dep_delay)` name                       
+   <chr>               <dbl> <chr>                      
+ 1 HA                 -1.57  Hawaiian Airlines Inc.     
+ 2 AS                  0.310 Alaska Airlines Inc.       
+ 3 US                  5.48  US Airways Inc.            
+ 4 OO                  8.19  SkyWest Airlines Inc.      
+ 5 AA                  8.39  American Airlines Inc.     
+ 6 MQ                 12.1   Envoy Air                  
+ 7 DL                 12.1   Delta Air Lines Inc.       
+ 8 UA                 13.3   United Air Lines Inc.      
+ 9 B6                 16.2   JetBlue Airways            
+10 VX                 16.5   Virgin America             
+11 EV                 16.8   ExpressJet Airlines Inc.   
+12 YV                 17.9   Mesa Airlines Inc.         
+13 9E                 18.5   Endeavor Air Inc.          
+14 WN                 20.3   Southwest Airlines Co.     
+15 F9                 20.8   Frontier Airlines Inc.     
+16 FL                 27.1   AirTran Airways Corporation
+
+### No.4 จงหาค่าเฉลี่ย,ผลรวม,MIN,MAX ของ AIRTIME ของทุกสายการบิน
+flights %>%
+    select(carrier,air_time)%>%
+    filter(air_time != "NA")%>%
+    group_by(carrier)%>%
+    summarise(sum_airtime = sum(air_time),
+              avg_airtime = mean(air_time),
+              min_airtime = min(air_time),
+              max_airtime = max(air_time))
+## ANSWER
+# A tibble: 16 × 5
+   carrier sum_airtime avg_airtime min_airtime max_airtime
+   <chr>         <dbl>       <dbl>       <dbl>       <dbl>
+ 1 9E          1500801        86.8          21         272
+ 2 AA          6032306       189.           29         426
+ 3 AS           230863       326.          277         392
+ 4 B6          8170975       151.           29         413
+ 5 DL          8277661       174.           26         490
+ 6 EV          4603614        90.1          20         286
+ 7 F9           156357       230.          195         278
+ 8 FL           321132       101.           53         161
+ 9 HA           213096       623.          580         691
+10 MQ          2282880        91.2          33         236
+11 OO             2421        83.5          50         177
+12 UA         12237728       212.           23         695
+13 US          1756507        88.6          21         359
+14 VX          1724104       337.          264         406
+15 WN          1780402       148.           31         362
+16 YV            35763        65.7          32         122
+
+### No.5 เดือนที่ 1 สายการบินใดมีเที่ยวบินมากสุด
+flights %>%
+      select(month,carrier,flight)%>%
+      filter(month == 1)%>%
+      group_by(month,carrier)%>%
+      summarise(n =n())%>%
+      arrange(desc(n))
+## ANSWER
+# A tibble: 16 × 3
+# Groups:   month [1]
+   month carrier     n
+   <int> <chr>   <int>
+ 1     1 UA       4637
+ 2     1 B6       4427
+ 3     1 EV       4171
+ 4     1 DL       3690
+ 5     1 AA       2794
+ 6     1 MQ       2271
+ 7     1 US       1602
+ 8     1 9E       1573
+ 9     1 WN        996
+10     1 FL        328
+11     1 VX        316
+12     1 AS         62
+13     1 F9         59
+14     1 YV         46
+15     1 HA         31
+16     1 OO          1
