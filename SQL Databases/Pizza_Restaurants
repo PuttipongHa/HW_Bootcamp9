@@ -1,0 +1,105 @@
+CREATE TABLE customers(
+  customers_id INT PRIMARY KEY,
+  customers_name TEXT,
+  customers_TEL TEXT,
+  customers_address TEXT
+);
+
+INSERT INTO customers VALUES
+  (1,'CIN','091-2345890','BKK'),
+  (2,'WIT','096-2769820','PKT'),
+  (3,'JIN','098-3456789','LEI'),
+  (4,'JUN','091-9475655','NKI'),
+  (5,'OAT','091-3772719','NKI');
+
+.mode box
+.print "\n\n Table:customers"
+select * from customers;
+
+CREATE TABLE orders(
+  orders_id INT PRIMARY KEY,
+  customers_id INT,
+  menus_id INT,
+  quantity INT,
+  total_price REAL
+);
+
+INSERT INTO orders VALUES
+  (1,3,5,2,300),
+  (2,2,3,1,200),
+  (3,5,1,2,200),
+  (4,1,2,2,300),
+  (5,3,10,2,300),
+  (6,4,11,1,200),
+  (7,5,7,2,200),
+  (8,1,9,2,400),
+  (9,3,6,4,800),
+  (10,4,5,1,150);
+
+.mode box
+.print "\n\n Table:orders"
+select * from orders;
+
+CREATE TABLE menus(
+  menus_id INT PRIMARY KEY,
+  menus_name TEXT,
+  menus_size TEXT,
+  menus_price REAL
+);
+
+INSERT INTO menus VALUES 
+  (1,'hawaiian pizza','S',100),
+  (2,'hawaiian pizza','M',150),
+  (3,'hawaiian pizza','L',200),
+  (4,'pepperoni pizza','S',100),
+  (5,'pepperoni pizza','M',150),
+  (6,'pepperoni pizza','L',200),
+  (7,'cheese pizza','S',100),
+  (8,'cheese pizza','M',150),
+  (9,'cheese pizza','L',200),
+  (10,'seafood pizza','S',150),
+  (11,'seafood pizza','M',200),
+  (12,'seafood pizza','L',250);
+
+.mode box
+.print "\n\n Table:menus"
+select * from menus;
+
+.mode box
+.print "\n\n 1.) Find the sum of all Hawaiian pizza and seafood pizza sold."
+SELECT
+  menus.menus_name,
+  sum(total_price)
+FROM orders
+JOIN menus ON menus.menus_id = orders.menus_id
+WHERE menus_name = 'hawaiian pizza'
+   OR menus_name = 'seafood pizza'
+GROUP BY menus_name;
+
+.mode box
+.print "\n\n 2.) Find information about the customers who purchase the most products."
+SELECT 
+  customers.customers_id AS customers_id,
+  customers.customers_name AS customers_name,
+  customers.customers_TEL AS customers_TEL,
+  customers.customers_address AS customers_address,
+  max(total_price)
+FROM customers
+JOIN orders ON orders.customers_id = customers.customers_id
+JOIN menus ON menus.menus_id = orders.menus_id;
+
+.mode box
+.print "\n\n 3.) Find information about customers who purchase cheese pizza or pepperoni pizza and total_price greater than 300. "
+SELECT 
+  customers_id 
+  customers_name ,
+  customers_TEL ,
+  customers_address
+FROM (SELECT 
+        *
+      FROM customers
+      JOIN orders ON orders.customers_id = customers.customers_id
+      JOIN menus ON menus.menus_id = orders.menus_id)
+WHERE (menus_name = 'cheese pizza' OR menus_name = 'pepperoni pizza')
+  AND total_price > 300
+ORDER BY customers_name
