@@ -1,0 +1,39 @@
+library(tidyverse)
+library(mlbench)
+library(caret)
+library(MLmetrics)
+
+## import data
+
+churn <- read.csv("churn.csv")
+
+## 1. split data
+set.seed(42)
+n <- nrow(churn)
+train_id <- sample(1:n, 0.8*n)
+train_df <- churn[train_id, ]
+test_df <- churn[-train_id, ]
+
+## 2. train model
+set.seed(42)
+ctrl <- trainControl(method = "cv",
+                     number = 5)
+model <- train(churn ~ totalintlminutes + totalevecharge + totalintlcalls + numbercustomerservicecalls + numbervmailmessages,
+               data = train_df,
+               method = "glm",
+               trControl = ctrl)
+
+            
+## 3. score model
+
+pred_churn <- predict(model, newdata = test_df)
+
+## 4. evaluate model
+mean(pred_churn == test_df$churn)
+
+con <- table(test_df$churn,pred_churn,dnn = c("actual","preds"))
+
+cat("accuracy",(con[1,1]+con[2,2])/sum(con))
+cat("Precision",con[2,2]/(con[1,2]+con[2,2]))
+cat("Recall",con[2,2]/(con[2,1]+con[2,2]))
+cat("F1",2*0.6666667*0.02702703/(0.02702703+0.6666667))
