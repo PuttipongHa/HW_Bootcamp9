@@ -1,0 +1,63 @@
+# เป่ายิ้งฉุบ game
+import random
+def game():
+    print("Welcome to the เป่ายิงฉุบ game")
+    hands = ["hummer", "scissor", "paper"]
+    player_score = 0
+    computer_score = 0
+    while True :
+        start_game = input("Do you want to play or quit : ")
+        if start_game == "play" :
+            player_hands = input("Please choose hummer,scissor,paper : ")
+            computer_hand = random.sample(hands, 1)[0]
+            if  player_hands == "hummer" and computer_hand == "scissor" or \
+                player_hands == "scissor" and computer_hand == "paper" or \
+                player_hands == "paper" and computer_hand == "hummer" :
+                print("player hand:", player_hands)
+                print("computer hand:", computer_hand)
+                print("You win")
+                player_score = player_score + 1
+                computer_score = computer_score + 0
+            elif    player_hands == "hummer" and computer_hand == "hummer" or \
+                    player_hands == "scissor" and computer_hand == "scissor" or \
+                    player_hands == "paper" and computer_hand == "paper" :
+                    print("player hand:", player_hands)
+                    print("computer hand:", computer_hand)
+                    print("Draw")
+                    player_score = player_score + 0
+                    computer_score = computer_score + 0
+            elif    player_hands == "hummer" and computer_hand == "paper" or \
+                    player_hands == "scissor" and computer_hand == "hummer" or \
+                    player_hands == "paper" and computer_hand == "scissor" :
+                    print("player hand:", player_hands)
+                    print("computer hand:", computer_hand)
+                    print("You lose")
+                    player_score = player_score + 0
+                    computer_score = computer_score + 1
+            else :
+                    print("Try again")
+        else :
+            print("player hand:", player_score)
+            print("computer hand:", computer_score)
+            break
+game()
+
+# OOP
+class DataAnalyst :
+    def __init__(self,experience,position,skill) :
+        self.experience = experience
+        self.position = position
+        self.skill = skill
+    def introduce(self,name) :
+        return f"My name is {name}"
+    def upskill(self,new_skill) :
+        return f"New skill = {new_skill}"
+    def new_position(self) :
+        if self.experience > 3 and self.position == "junior data analyst" :
+            return "senior data analyst"
+        else :
+            return "junior data analyst"
+First_DataAnalys = DataAnalyst(4,"junior data analyst","SQL")
+print(First_DataAnalys.introduce("John"))
+print(First_DataAnalys.upskill("Python"))
+print(First_DataAnalys.new_position())
