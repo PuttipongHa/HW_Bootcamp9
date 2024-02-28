@@ -1,0 +1,110 @@
+# OOP_ATM
+from random import randint
+
+class ATM:
+    def __init__(self, account_name, bank_name, initial): ## double underscore or called dunder
+        self.account_name = account_name
+        self.bank_name = bank_name
+        self.balance = initial
+    def __str__(self):
+        return f"This is an account of {self.account_name}, bank: {self.bank_name}"
+    def check_balance(self):
+        print(f"Balance: {self.balance} THB")
+    def deposit(self, money):
+        self.balance += money
+        print(f"Deposit successfully: your new balance: {self.balance} THB")
+    def withdraw(self, money):
+        self.balance -= money
+        print(f"Witdraw successfully: your new balance: {self.balance} THB")
+    def transfer_money(self,destination_account,money):
+        self.balance -= money
+        if self.balance > 0 :
+            print(f"Transaction to {destination_account} completed : your new balance: {self.balance} THB")
+        else :
+            print(f"Transaction Failed")
+    def get_OTP(self):
+        otp = randint(1000, 9999)
+        print(f"Your OTP: {otp} This OTP will be available in the next 2 minutes.")
+    def Bill_payments(self,bill,money):
+        self.balance -= money
+        if self.balance > 0 :
+            print(f"This {bill} Transaction completed : your new balance: {self.balance} THB")
+        else :
+            print(f"Transaction Failed")
+First_ATM = ATM("John",123456789,3000)
+First_ATM.Bill_payments("AIS",2500)
+First_ATM.transfer_money(123456798,200)
+
+# API : STARWARS
+import pandas as pd
+from requests import get
+
+url = "https://swapi.dev/api/people/"
+
+## homework API 01
+starwars = pd.DataFrame(
+    columns=["name", "height", "weight", "gender", "homeworld"]
+)
+for i in range(5):
+    index = i + 1
+    new_url = url + str(index)
+    resp = get(new_url).json()
+    name = resp["name"]
+    height = resp["height"]
+    weight = resp["mass"]
+    gender = resp["gender"]
+    homeworld = resp["homeworld"]
+    starwars.loc[len(starwars)] = [name,height,weight,gender,gender]
+print(starwars)
+starwars.to_csv('starswars.csv', index=False)
+
+# TV MAZE PEOPLE
+import pandas as pd
+from requests import get
+
+url = "https://api.tvmaze.com/people/"
+
+## homework API 01
+TV_MAZE = pd.DataFrame(
+    columns=["name", "country", "birthday", "deathday", "gender"]
+)
+for i in range(5):
+    index = i + 1
+    new_url = url + str(index)
+    resp = get(new_url).json()
+    name = resp["name"]
+    country = resp["country"]["code"]
+    birthday = resp["birthday"]
+    deathday = resp["deathday"]
+    gender = resp["gender"]
+    TV_MAZE.loc[len(TV_MAZE)] = [name,country,birthday,deathday,gender]
+print(TV_MAZE)
+#TV_MAZE.to_csv('TV_MAZE.csv', index=False)
+
+# churn prediction
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+import pandas as pd
+
+url = "https://raw.githubusercontent.com/albayraktaroglu/Datasets/master/churn.csv"
+churn = pd.read_csv(url)
+
+
+#1.split Data
+y = churn["Churn?"]
+X = churn[["Night Calls","Intl Charge","Intl Calls","Day Calls","CustServ Calls"]]
+X_train, X_test, y_train, y_test = train_test_split(
+     X, y, test_size=0.20, random_state=42)
+
+#2.train model 
+model = LogisticRegression()
+model.fit(X_train,y_train)
+
+#3.score
+train_error = model.score(X_train,y_train)
+
+#4.evaluate
+test_error = model.score(X_test,y_test)
+
+print(train_error,test_error)
